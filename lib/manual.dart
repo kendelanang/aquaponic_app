@@ -1,6 +1,7 @@
 import 'package:aquaponic_app/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Manual extends StatefulWidget {
   const Manual({Key key}) : super(key: key);
@@ -10,14 +11,56 @@ class Manual extends StatefulWidget {
 }
 
 class _ManualState extends State<Manual> {
+  final _rdatabase = FirebaseDatabase.instance.ref();
+  String _phup;
   bool switchListTileValue;
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _activateListener();
+  }
+
+  void _activateListener() {
+    _rdatabase.child('test/phup').onValue.listen((event) {
+      final String _baca = event.snapshot.value;
+      setState(() {
+        _phup = _baca;
+      });
+    });
+  }
+
+  void phup() {
+    _rdatabase.child('test').update({"phup": "on"});
+    _rdatabase.child('test').update({"phdown": "off"});
+  }
+
+  void phdown() {
+    _rdatabase.child('test').update({"phdown": "on"});
+    _rdatabase.child('test').update({"phup": "off"});
+  }
+
+  void ppmup() {
+    _rdatabase.child('test').update({"ppmup": "on"});
+    _rdatabase.child('test').update({"ppmdown": "off"});
+  }
+
+  void ppmdown() {
+    _rdatabase.child('test').update({"ppmdown": "on"});
+    _rdatabase.child('test').update({"ppmup": "off"});
+  }
+
+  void offall() {
+    _rdatabase.child('test').update({"phdown": "off"});
+    _rdatabase.child('test').update({"phup": "off"});
+    _rdatabase.child('test').update({"ppmdown": "off"});
+    _rdatabase.child('test').update({"ppmup": "off"});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      key: scaffoldKey,
       backgroundColor: Color.fromARGB(0, 38, 50, 56),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -149,7 +192,7 @@ class _ManualState extends State<Manual> {
                                     ),
                                   ),
                                   Text(
-                                    '0',
+                                    "$_phup",
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 30,
@@ -177,6 +220,7 @@ class _ManualState extends State<Manual> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         onPressed: () {
+                          phup();
                           print('Button pressed ...');
                         },
                         icon: Icon(
@@ -194,6 +238,7 @@ class _ManualState extends State<Manual> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         onPressed: () {
+                          phdown();
                           print('Button pressed ...');
                         },
                         icon: Icon(
@@ -302,6 +347,7 @@ class _ManualState extends State<Manual> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         onPressed: () {
+                          ppmup();
                           print('Button pressed ...');
                         },
                         icon: Icon(
@@ -319,6 +365,7 @@ class _ManualState extends State<Manual> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         onPressed: () {
+                          ppmdown();
                           print('Button pressed ...');
                         },
                         icon: Icon(
@@ -338,6 +385,7 @@ class _ManualState extends State<Manual> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20))),
                     onPressed: () {
+                      offall();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
