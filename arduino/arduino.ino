@@ -10,6 +10,10 @@ const int relay1 = D2; //pin2
 const int relay2 = D3;
 const int relay3 = D4;
 
+int n = 0;
+int pH_Value; 
+float Voltage;
+
 int relayON = LOW; //relay nyala
 int relayOFF = HIGH; //relay mati
 
@@ -19,6 +23,7 @@ void setup() {
   pinMode(relay1, OUTPUT);
   pinMode(relay2, OUTPUT);
   pinMode(relay3, OUTPUT);
+  pinMode(pH_Value, INPUT); 
 
   digitalWrite(relay1, relayOFF);
   digitalWrite(relay2, relayOFF);
@@ -37,10 +42,14 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
-int n = 0;
-
 void loop() {
-  Serial.println(Firebase.getString("test/phup"));
+  //Serial.println(Firebase.getString("test/phup"));
+  pH_Value = analogRead(A0); 
+  Voltage = pH_Value * (5.0 / 1023.0);
+  String voltase = String(Voltage); 
+  Serial.println(Voltage); 
+  Firebase.setString("test/ph", voltase);
+  delay(200);
   if (Firebase.getString("test/phup") == "on"){
     digitalWrite(relay1, relayON);
     digitalWrite(relay2, relayOFF);
@@ -53,8 +62,6 @@ void loop() {
     digitalWrite(relay1, relayOFF);
     digitalWrite(relay2, relayOFF);
   }
-  
-  
 }
 
 void relay()

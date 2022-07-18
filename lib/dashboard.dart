@@ -1,6 +1,7 @@
 import 'package:aquaponic_app/manual.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key key}) : super(key: key);
@@ -10,8 +11,25 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  final _rdatabase = FirebaseDatabase.instance.ref();
+  String _ph;
   bool switchListTileValue;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _activateListener();
+  }
+
+  void _activateListener() {
+    _rdatabase.child('test/ph').onValue.listen((event) {
+      final String _baca = event.snapshot.value;
+      setState(() {
+        _ph = _baca;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +167,7 @@ class _DashboardState extends State<Dashboard> {
                                     ),
                                   ),
                                   Text(
-                                    '0',
+                                    "$_ph",
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 30,

@@ -12,7 +12,7 @@ class Manual extends StatefulWidget {
 
 class _ManualState extends State<Manual> {
   final _rdatabase = FirebaseDatabase.instance.ref();
-  String _phup;
+  String _ph;
   bool switchListTileValue;
 
   @override
@@ -22,10 +22,10 @@ class _ManualState extends State<Manual> {
   }
 
   void _activateListener() {
-    _rdatabase.child('test/phup').onValue.listen((event) {
+    _rdatabase.child('test/ph').onValue.listen((event) {
       final String _baca = event.snapshot.value;
       setState(() {
-        _phup = _baca;
+        _ph = _baca;
       });
     });
   }
@@ -192,7 +192,7 @@ class _ManualState extends State<Manual> {
                                     ),
                                   ),
                                   Text(
-                                    "$_phup",
+                                    "$_ph",
                                     style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 30,
