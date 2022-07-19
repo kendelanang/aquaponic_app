@@ -47,7 +47,7 @@ void loop() {
   pH_Value = analogRead(A0); 
   Voltage = pH_Value * (5.0 / 1023.0);
   String voltase = String(Voltage); 
-  Serial.println(Voltage); 
+  Serial.println(pH_Value); 
   Firebase.setString("test/ph", voltase);
   delay(200);
   if (Firebase.getString("test/phup") == "on"){
